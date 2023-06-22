@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+  dev_postgres:
+    image: postgres:alpine
+    command: [ "postgres", "-c", "log_statement=all" ]
+    volumes:
+      - ./database/init_calendar.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - "POSTGRES_PASSWORD=calendar_dev_password"
+      - "POSTGRES_USER=calendar_dev_user"
+    ports:
+      - "5432:5432"
