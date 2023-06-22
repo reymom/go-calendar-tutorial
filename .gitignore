@@ -1,0 +1,5 @@
+bin/
+.idea/
+conf/
+.vscode/
+.env.pw
