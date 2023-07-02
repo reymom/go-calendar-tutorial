@@ -3,18 +3,16 @@ package model
 import "time"
 
 type Task struct {
+	TaskId    string
+	Completed bool
+	AddableTask
+}
+
+type AddableTask struct {
 	Name        string
 	Description string
 	StartsAt    time.Time
 	FinishesAt  time.Time
-	Priority    PriorityTypeId
-	Color       ColorId
-	Completed   bool
-}
-
-type AddableTask struct {
-	Name        *string
-	Description string
 	Priority    PriorityTypeId
 	Color       ColorId
 }

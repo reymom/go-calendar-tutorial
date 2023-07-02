@@ -11,6 +11,23 @@ func (c ConstError) Error() string {
 }
 
 const (
+	ErrNilNotAllowed             ConstError = "nil not allowed"
+	ErrFakeWritePool             ConstError = "no connection supported for fake write pool"
+	ErrReadConnectionStringEmpty ConstError = "empty connection string"
+)
+
+const (
+	ErrTextToLong             ConstError = "Text too long"
+	ErrOutOfBoundsOfPGInt2    ConstError = "Int2 out of bonds"
+	ErrInt2NotCastableToUint8 ConstError = "Int2 out of bounds for uint8"
+	ErrTimestamptzNotPresent  ConstError = "Timestamptz not present"
+	ErrTextNotPresent         ConstError = "Text not present"
+	ErrUuidNotPresent         ConstError = "Uuid not present"
+	ErrInt2NotPresent         ConstError = "Int2 not present"
+	ErrBoolNotPresent         ConstError = "Bool not present"
+)
+
+const (
 	errUnknownPriorityTypeId  ConstError = "unknown priority type"
 	errUnknownColorId         ConstError = "unknown color"
 	errUnknownTimeScaleTypeId ConstError = "unknown time scale type"
