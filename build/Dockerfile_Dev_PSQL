@@ -1,0 +1,5 @@
+FROM postgres:alpine
+ENV POSTGRES_PASSWORD=calendar_dev_password
+ENV POSTGRES_USER=calendar_dev_user
+COPY ./database/init.sql /docker-entrypoint-initdb.d/init.sql
+CMD ["postgres", "-c", "log_statement=all"]
