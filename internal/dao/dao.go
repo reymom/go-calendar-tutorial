@@ -30,7 +30,7 @@ func NewPsqlDao(config *Config) (*PsqlDao, error) {
 	if config == nil {
 		return nil, model.ErrNilNotAllowed
 	}
-	readPool, e := InitializePool(config.ConnectionStringRead, config.MaxReadConnections)
+	readPool, e := initializePool(config.ConnectionStringRead, config.MaxReadConnections)
 	if e != nil {
 		return nil, e
 	}
@@ -38,7 +38,7 @@ func NewPsqlDao(config *Config) (*PsqlDao, error) {
 	var writePool *pgxpool.Pool
 	switch config.WriteEnabled {
 	case true:
-		writePool, e = InitializePool(config.ConnectionStringWrite, config.MaxWriteConnections)
+		writePool, e = initializePool(config.ConnectionStringWrite, config.MaxWriteConnections)
 		if e != nil {
 			return nil, e
 		}
@@ -57,7 +57,7 @@ func NewPsqlDao(config *Config) (*PsqlDao, error) {
 	}, nil
 }
 
-func InitializePool(connectionString string, maxPoolSize uint) (*pgxpool.Pool, error) {
+func initializePool(connectionString string, maxPoolSize uint) (*pgxpool.Pool, error) {
 
 	poolConfig, e := pgxpool.ParseConfig(connectionString)
 	if e != nil {
