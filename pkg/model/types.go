@@ -20,7 +20,7 @@ type AddableTask struct {
 type PriorityTypeId uint8
 
 func (t PriorityTypeId) Validate() error {
-	if t < lastPriorityTypeId {
+	if t < LastPriorityTypeId {
 		return nil
 	}
 	return errUnknownPriorityTypeId
@@ -29,7 +29,7 @@ func (t PriorityTypeId) Validate() error {
 type ColorId uint8
 
 func (t ColorId) Validate() error {
-	if t < lastColorId {
+	if t < LastColorId {
 		return nil
 	}
 	return errUnknownColorId

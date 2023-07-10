@@ -11,8 +11,8 @@ func (t TimeScaleId) Validate() error {
 	return errUnknownTimeScaleTypeId
 }
 
-func NewYearlyFilter(year uint) YearlyFilter {
-	return YearlyFilter{
+func NewYearlyFilter(year uint) *YearlyFilter {
+	return &YearlyFilter{
 		year: year,
 	}
 }
@@ -22,7 +22,7 @@ type YearlyFilter struct {
 }
 
 func (y *YearlyFilter) Validate() error {
-	e := y.GetTimeScaleId().Validate()
+	e := y.getTimeScaleId().Validate()
 	if e != nil {
 		return e
 	}
@@ -32,7 +32,7 @@ func (y *YearlyFilter) Validate() error {
 	return nil
 }
 
-func (y *YearlyFilter) GetTimeScaleId() TimeScaleId {
+func (y *YearlyFilter) getTimeScaleId() TimeScaleId {
 	return timeScaleIdYear
 }
 
@@ -50,26 +50,26 @@ func (y *YearlyFilter) getLocation() *time.Location {
 }
 
 type MonthlyFilter struct {
-	year  YearlyFilter
+	year  *YearlyFilter
 	month time.Month
 }
 
-func NewMonthlyFilter(month time.Month, year uint) MonthlyFilter {
-	return MonthlyFilter{
+func NewMonthlyFilter(month time.Month, year uint) *MonthlyFilter {
+	return &MonthlyFilter{
 		year:  NewYearlyFilter(year),
 		month: month,
 	}
 }
 
 func (m *MonthlyFilter) Validate() error {
-	e := m.GetTimeScaleId().Validate()
+	e := m.getTimeScaleId().Validate()
 	if e != nil {
 		return e
 	}
 	return m.year.Validate()
 }
 
-func (m *MonthlyFilter) GetTimeScaleId() TimeScaleId {
+func (m *MonthlyFilter) getTimeScaleId() TimeScaleId {
 	return timeScaleIdMonth
 }
 
@@ -83,15 +83,15 @@ type WeeklyFilter struct {
 	week uint
 }
 
-func NewWeeklyFilter(week, year uint) WeeklyFilter {
-	return WeeklyFilter{
-		year: NewYearlyFilter(year),
+func NewWeeklyFilter(week, year uint) *WeeklyFilter {
+	return &WeeklyFilter{
+		year: *NewYearlyFilter(year),
 		week: week,
 	}
 }
 
 func (w *WeeklyFilter) Validate() error {
-	e := w.GetTimeScaleId().Validate()
+	e := w.getTimeScaleId().Validate()
 	if e != nil {
 		return e
 	}
@@ -101,7 +101,7 @@ func (w *WeeklyFilter) Validate() error {
 	return w.year.Validate()
 }
 
-func (w *WeeklyFilter) GetTimeScaleId() TimeScaleId {
+func (w *WeeklyFilter) getTimeScaleId() TimeScaleId {
 	return timeScaleIdWeek
 }
 
@@ -124,26 +124,26 @@ func (w *WeeklyFilter) GetTimeRange() [2]time.Time {
 }
 
 type DaylyFilter struct {
-	month MonthlyFilter
+	month *MonthlyFilter
 	day   time.Weekday
 }
 
-func NewDaylyFilter(day time.Weekday, month time.Month, year uint) DaylyFilter {
-	return DaylyFilter{
+func NewDaylyFilter(day time.Weekday, month time.Month, year uint) *DaylyFilter {
+	return &DaylyFilter{
 		month: NewMonthlyFilter(month, year),
 		day:   day,
 	}
 }
 
 func (d *DaylyFilter) Validate() error {
-	e := d.GetTimeScaleId().Validate()
+	e := d.getTimeScaleId().Validate()
 	if e != nil {
 		return e
 	}
 	return d.month.year.Validate()
 }
 
-func (d *DaylyFilter) GetTimeScaleId() TimeScaleId {
+func (d *DaylyFilter) getTimeScaleId() TimeScaleId {
 	return timeScaleIdDay
 }
 

@@ -4,7 +4,7 @@ const (
 	PriorityTypeIdLow PriorityTypeId = iota
 	PriorityTypeIdMiddle
 	PriorityTypeIdHigh
-	lastPriorityTypeId
+	LastPriorityTypeId
 )
 
 const (
@@ -17,7 +17,7 @@ const (
 	ColorIdCyan
 	ColorIdBlack
 	ColorIdWhite
-	lastColorId
+	LastColorId
 )
 
 const (
