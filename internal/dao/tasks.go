@@ -46,10 +46,11 @@ func (p *PsqlDao) EditTask(ctx context.Context, taskId string, task model.Addabl
 		return nil, e
 	}
 	var out = mapping.PgTask{
-		PgAddableTask: *in,
+		TaskId: pgTaskId,
 	}
 	e = p.writePool.QueryRow(ctx, query, pgTaskId, &in.Name, &in.Description, &in.StartsAt,
-		&in.FinishesAt, &in.Priority, &in.Color).Scan(&out.TaskId, &out.Completed)
+		&in.FinishesAt, &in.Priority, &in.Color).Scan(&out.Name, &out.Description, &out.StartsAt,
+		&out.FinishesAt, &out.Priority, &out.Color, &out.Completed)
 	if e != nil {
 		return nil, e
 	}

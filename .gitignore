@@ -3,3 +3,4 @@ bin/
 conf/
 .vscode/
 .env.pw
+__debug*

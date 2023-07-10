@@ -29,6 +29,6 @@ const (
 )
 
 const (
-	lowerYearBond uint = 2022
+	lowerYearBond uint = 2021
 	upperWeekBond uint = 53
 )

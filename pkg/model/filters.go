@@ -42,11 +42,7 @@ func (y *YearlyFilter) GetTimeRange() [2]time.Time {
 }
 
 func (y *YearlyFilter) getLocation() *time.Location {
-	location, e := time.LoadLocation("Local")
-	if e != nil {
-		location = time.UTC
-	}
-	return location
+	return time.UTC
 }
 
 type MonthlyFilter struct {
@@ -125,10 +121,10 @@ func (w *WeeklyFilter) GetTimeRange() [2]time.Time {
 
 type DaylyFilter struct {
 	month *MonthlyFilter
-	day   time.Weekday
+	day   uint
 }
 
-func NewDaylyFilter(day time.Weekday, month time.Month, year uint) *DaylyFilter {
+func NewDaylyFilter(day uint, month time.Month, year uint) *DaylyFilter {
 	return &DaylyFilter{
 		month: NewMonthlyFilter(month, year),
 		day:   day,
