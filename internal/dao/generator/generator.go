@@ -16,8 +16,8 @@ func GenerateRandomAddableTask() model.AddableTask {
 	return model.AddableTask{
 		Name:        name,
 		Description: description,
-		StartsAt:    timeRange[0],
-		FinishesAt:  timeRange[1],
+		StartsAt:    timeRange[0].Round(time.Millisecond).UTC(),
+		FinishesAt:  timeRange[1].Round(time.Millisecond).UTC(),
 		Priority:    priority,
 		Color:       color,
 	}
