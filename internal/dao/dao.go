@@ -15,24 +15,16 @@ type Config struct {
 	WriteEnabled          bool
 	MaxReadConnections    uint
 	MaxWriteConnections   uint
-	AsyncErrorHandler     model.ErrorHandler
 }
 
 type PsqlDao struct {
-	readPool          *pgxpool.Pool
-	writePool         *pgxpool.Pool
-	readEnabled       bool
-	writeEnabled      bool
-	asyncErrorHandler model.ErrorHandler
+	readPool     *pgxpool.Pool
+	writePool    *pgxpool.Pool
+	readEnabled  bool
+	writeEnabled bool
 }
 
 var _ model.TasksDao = (*PsqlDao)(nil)
-
-func (d *PsqlDao) handleAsyncError(e error) {
-	if d.asyncErrorHandler != nil && e != nil {
-		d.asyncErrorHandler.HandleError(e)
-	}
-}
 
 func NewPsqlDao(config *Config) (*PsqlDao, error) {
 	if config == nil {
@@ -58,11 +50,10 @@ func NewPsqlDao(config *Config) (*PsqlDao, error) {
 	}
 
 	return &PsqlDao{
-		readPool:          readPool,
-		writePool:         writePool,
-		readEnabled:       true,
-		writeEnabled:      config.WriteEnabled,
-		asyncErrorHandler: config.AsyncErrorHandler,
+		readPool:     readPool,
+		writePool:    writePool,
+		readEnabled:  true,
+		writeEnabled: config.WriteEnabled,
 	}, nil
 }
 

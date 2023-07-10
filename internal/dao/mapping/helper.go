@@ -11,7 +11,7 @@ import (
 )
 
 func uuidFromPGUuid(pgUuid pgtype.UUID) (string, error) {
-	if pgUuid.Valid == false {
+	if !pgUuid.Valid {
 		return "", model.ErrUuidNotPresent
 	}
 	parsedUuid, e := uuid.FromBytes(pgUuid.Bytes[:])
@@ -21,8 +21,22 @@ func uuidFromPGUuid(pgUuid pgtype.UUID) (string, error) {
 	return parsedUuid.String(), nil
 }
 
+func PgUuidFromUuid(id string) (pgtype.UUID, error) {
+	parsedId, e := uuid.Parse(id)
+	if e != nil {
+		return pgtype.UUID{}, e
+	}
+	b, e := parsedId.MarshalBinary()
+	if e != nil {
+		return pgtype.UUID{}, e
+	}
+	pgUuid := pgtype.UUID{Valid: true}
+	copy(pgUuid.Bytes[:], b)
+	return pgUuid, nil
+}
+
 func uint8FromPgInt2[T interface{ ~uint8 }](i pgtype.Int2) (T, error) {
-	if i.Valid == false {
+	if !i.Valid {
 		return 0, model.ErrInt2NotPresent
 	}
 	if i.Int16 < 0 || i.Int16 > math.MaxUint8 {
@@ -48,7 +62,7 @@ func trimSpacesOfString(s string) string {
 }
 
 func stringFromPGVarchar(pgText pgtype.Text) (string, error) {
-	if pgText.Valid == false {
+	if !pgText.Valid {
 		return "", model.ErrTextNotPresent
 	}
 	return pgText.String, nil
@@ -66,7 +80,7 @@ func pgTextFromString(s string, length uint) (pgtype.Text, error) {
 }
 
 func timeFromPgTimestamptz(pgT pgtype.Timestamptz) (time.Time, error) {
-	if pgT.Valid == false {
+	if !pgT.Valid {
 		return time.Time{}, model.ErrTimestamptzNotPresent
 	}
 	return pgT.Time.UTC(), nil
@@ -81,8 +95,15 @@ func pgTimestamptzFromTime(t time.Time) (pgtype.Timestamptz, error) {
 }
 
 func boolFromPgBool(pgB pgtype.Bool) (bool, error) {
-	if pgB.Valid == false {
+	if !pgB.Valid {
 		return false, model.ErrBoolNotPresent
 	}
 	return pgB.Bool, nil
+}
+
+func PgBoolFromBool(b bool) (pgtype.Bool, error) {
+	return pgtype.Bool{
+		Bool:  b,
+		Valid: true,
+	}, nil
 }
