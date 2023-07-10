@@ -8,8 +8,8 @@ import (
 )
 
 const (
-	taskNameLength        = 126
-	taskDescriptionLength = 255
+	TaskNameLength        = 64
+	TaskDescriptionLength = 126
 )
 
 type PgTask struct {
@@ -137,7 +137,7 @@ func PgAddableTaskFromAddableTask(task *model.AddableTask) (*PgAddableTask, erro
 }
 
 func (a *PgAddableTask) setName(name string) error {
-	pgName, e := pgTextFromString(name, taskNameLength)
+	pgName, e := pgTextFromString(name, TaskNameLength)
 	if e != nil {
 		return e
 	}
@@ -146,7 +146,7 @@ func (a *PgAddableTask) setName(name string) error {
 }
 
 func (a *PgAddableTask) setDescription(description string) error {
-	pgDescription, e := pgTextFromString(description, taskDescriptionLength)
+	pgDescription, e := pgTextFromString(description, TaskDescriptionLength)
 	if e != nil {
 		return e
 	}
@@ -186,6 +186,6 @@ func (a *PgAddableTask) setColor(colorId model.ColorId) error {
 	if e != nil {
 		return e
 	}
-	a.Priority, e = toPgInt2(colorId)
+	a.Color, e = toPgInt2(colorId)
 	return e
 }
