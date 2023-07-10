@@ -17,13 +17,14 @@ func taskDaoTests(t *testing.T) {
 	t.Run("Create-Remove Task", testCreateTask)
 	t.Run("Edit Task", testEditTask)
 	t.Run("Complete Task", testCompleteTask)
+	t.Run("Filter Tasks", testFilterTasks)
 }
 
 func testGetTasks(t *testing.T) {
 	a := assert.New(t)
 	testEnv.cleanup()
 
-	list, e := testEnv.ListTasks(context.Background(), model.NewMonthlyFilter(time.April, 2023))
+	list, e := testEnv.ListTasks(context.Background(), model.NewYearlyFilter(uint(time.Now().Year())))
 	a.NoError(e)
 	a.Len(list, 0)
 	if a.NotNil(list) {
@@ -45,10 +46,12 @@ func testGetTasks(t *testing.T) {
 
 	//get 5 tasks
 	for i := 0; i <= 3; i++ {
-		list, e = testEnv.ListTasks(context.Background(), model.NewYearlyFilter(uint(time.Now().Year())))
+		task, e = testEnv.CreateTask(context.Background(), generator.GenerateRandomAddableTask())
 		a.NoError(e)
-		a.Len(list, 5)
 	}
+	list, e = testEnv.ListTasks(context.Background(), model.NewYearlyFilter(uint(time.Now().Year())))
+	a.NoError(e)
+	a.Len(list, 5)
 }
 
 func testCreateTask(t *testing.T) {
@@ -63,7 +66,7 @@ func testCreateTask(t *testing.T) {
 		TaskId:      retTask.TaskId,
 		Completed:   false,
 		AddableTask: genTask,
-	}, retTask)
+	}, *retTask)
 
 }
 
@@ -77,13 +80,13 @@ func testEditTask(t *testing.T) {
 	task := generator.GenerateRandomAddableTask()
 	updatedTask, e := testEnv.EditTask(context.Background(), retTask.TaskId, task)
 	a.NoError(e)
-	a.NotNil(e)
+	a.NotNil(updatedTask)
 	a.NotEqual(retTask, updatedTask)
 	a.Equal(model.Task{
 		TaskId:      retTask.TaskId,
 		Completed:   false,
 		AddableTask: task,
-	}, updatedTask)
+	}, *updatedTask)
 }
 
 func testCompleteTask(t *testing.T) {
@@ -100,4 +103,85 @@ func testCompleteTask(t *testing.T) {
 	list, e := testEnv.ListTasks(context.Background(), model.NewYearlyFilter(uint(time.Now().Year())))
 	a.NoError(e)
 	a.True(list[0].Completed)
+}
+
+func testFilterTasks(t *testing.T) {
+	a := assert.New(t)
+	testEnv.cleanup()
+	currentDate := time.Now()
+
+	genTask := generator.GenerateRandomAddableTask()
+	genTask.StartsAt = currentDate.AddDate(-1, 0, 0)
+	_, e := testEnv.CreateTask(context.Background(), genTask)
+	a.NoError(e)
+
+	list, e := testEnv.ListTasks(context.Background(), model.NewYearlyFilter(uint(currentDate.Year())))
+	a.NoError(e)
+	a.Len(list, 0)
+	list, e = testEnv.ListTasks(context.Background(), model.NewYearlyFilter(uint(currentDate.Year()-1)))
+	a.NoError(e)
+	a.Len(list, 1)
+
+	testEnv.cleanup()
+	genTask = generator.GenerateRandomAddableTask()
+	genTask.StartsAt = currentDate.AddDate(0, -2, 0)
+	_, e = testEnv.CreateTask(context.Background(), genTask)
+	a.NoError(e)
+
+	list, e = testEnv.ListTasks(context.Background(), model.NewMonthlyFilter(currentDate.Month(), uint(currentDate.Year())))
+	a.NoError(e)
+	a.Len(list, 0)
+	list, e = testEnv.ListTasks(context.Background(), model.NewMonthlyFilter(currentDate.Month()-2, uint(currentDate.Year())))
+	a.NoError(e)
+	a.Len(list, 1)
+
+	testEnv.cleanup()
+	genTask = generator.GenerateRandomAddableTask()
+	if currentDate.Weekday() < time.Thursday {
+		genTask.StartsAt = currentDate.AddDate(0, 0, 2)
+	} else {
+		genTask.StartsAt = currentDate.AddDate(0, 0, -2)
+	}
+	_, e = testEnv.CreateTask(context.Background(), genTask)
+	a.NoError(e)
+	genTask = generator.GenerateRandomAddableTask()
+	if currentDate.Weekday() < time.Thursday {
+		genTask.StartsAt = currentDate.AddDate(0, 0, 3)
+	} else {
+		genTask.StartsAt = currentDate.AddDate(0, 0, -3)
+	}
+	_, e = testEnv.CreateTask(context.Background(), genTask)
+	a.NoError(e)
+	genTask = generator.GenerateRandomAddableTask()
+	var (
+		addWeek int
+		day     uint
+	)
+	if currentDate.Day() > 15 {
+		addWeek = -1
+		day = uint(currentDate.Day()) - 7
+		genTask.StartsAt = currentDate.AddDate(0, 0, -7)
+	} else {
+		addWeek = 1
+		day = uint(currentDate.Day()) + 7
+		genTask.StartsAt = currentDate.AddDate(0, 0, 7)
+	}
+	_, e = testEnv.CreateTask(context.Background(), genTask)
+	a.NoError(e)
+
+	year, week := currentDate.ISOWeek()
+	list, e = testEnv.ListTasks(context.Background(), model.NewWeeklyFilter(uint(week), uint(year)))
+	a.NoError(e)
+	a.Len(list, 2)
+	list, e = testEnv.ListTasks(context.Background(), model.NewWeeklyFilter(uint(week+addWeek), uint(year)))
+	a.NoError(e)
+	a.Len(list, 1)
+
+	list, e = testEnv.ListTasks(context.Background(), model.NewDaylyFilter(uint(currentDate.Day()), currentDate.Month(), uint(currentDate.Year())))
+	a.NoError(e)
+	a.Len(list, 0)
+
+	list, e = testEnv.ListTasks(context.Background(), model.NewDaylyFilter(day, currentDate.Month(), uint(currentDate.Year())))
+	a.NoError(e)
+	a.Len(list, 1)
 }
