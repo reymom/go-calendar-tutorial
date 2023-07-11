@@ -7,14 +7,14 @@ ARG BINARY_NAME=mocking
 ARG DEPLOY_USER="UNSET USER"
 ARG DEPLOY_PW="UNSET PASSWORD"
 ARG VERSION="UNSET"
-ARG CONFIG_PATH="gitlab.com/vanilla-steel/userdao/cmd/mocking/config"
+ARG CONFIG_PATH="github.com/reymom/go-calendar-tutorial/cmd/mocking/config"
 
 ENV GOPRIVATE=github.com/reymon
 RUN apk update && apk add git
 
 RUN echo "USER: $DEPLOY_USER"
 
-RUN git config --global url."https://$DEPLOY_USER:$DEPLOY_PW@gitlab.com:".insteadOf "https://gitlab.com"
+RUN git config --global url."https://$DEPLOY_USER:$DEPLOY_PW@github.com:".insteadOf "https://github.com"
 
 RUN mkdir $BUILD_ROOT && mkdir $RELEASE_ROOT
 
@@ -26,7 +26,7 @@ WORKDIR $BUILD_ROOT
 RUN go build -mod=mod -tags mocking_app -ldflags "-X '${CONFIG_PATH}.Version=$VERSION' -X '${CONFIG_PATH}.BuildDate=$(date)'" -o $RELEASE_ROOT/$BINARY_NAME $BINARY_TO_BUILD
 
 FROM alpine:latest AS executor
-ARG BIN_ROOT=/vanilla_bin/
+ARG BIN_ROOT=/reymom_bin/
 ARG RELEASE_ROOT=/release/
 ARG CONF_DIR=/release/conf
 ENV BINARY_NAME=mocking
