@@ -1,0 +1,6 @@
+{
+  "connectionStringRead": "postgresql://calendar_dev_user:calendar_dev_password@172.17.0.2:5432/calendar_dev_user",
+  "connectionStringWrite": "postgresql://calendar_dev_user:calendar_dev_password@172.17.0.2:5432/calendar_dev_user",
+  "numOfTasks": 3,
+  "daysInRange": 7
+}
