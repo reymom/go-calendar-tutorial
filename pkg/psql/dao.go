@@ -9,6 +9,7 @@ type TaskDaoConfig struct {
 	ConnectionStringRead  string
 	ConnectionStringWrite string
 	MaxReadConnections    uint
+	MaxWriteConnections   uint
 }
 
 func NewTaskDao(config *TaskDaoConfig) (model.TasksDao, error) {
@@ -17,6 +18,7 @@ func NewTaskDao(config *TaskDaoConfig) (model.TasksDao, error) {
 		ConnectionStringWrite: config.ConnectionStringWrite,
 		WriteEnabled:          true,
 		MaxReadConnections:    config.MaxReadConnections,
+		MaxWriteConnections:   config.MaxWriteConnections,
 	}
 	return dao.NewPsqlDao(&internalConfig)
 }

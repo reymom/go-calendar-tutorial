@@ -11,8 +11,10 @@ import (
 
 const ConfigJsonName = "calendar.json"
 
-var Version = "UNKNOWN"
-var BuildDate = "UNKNOWN"
+var (
+	Version   = "UNKNOWN"
+	BuildDate = "UNKNOWN"
+)
 
 type Config struct {
 	ConnectionStringRead  string `json:"connectionStringRead"`

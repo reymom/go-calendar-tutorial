@@ -14,7 +14,7 @@ import (
 )
 
 func main() {
-	log.Info().Msgf(" ---------- Mocking App, Version %s, Build date %s -------------", config.Version, config.BuildDate)
+	log.Info().Msgf(" ---------- Mocking App, Version %s, Build date %s ----------", config.Version, config.BuildDate)
 	configFilePath := flag.String("c", path.Join("conf/"+config.ConfigJsonName), "config file path")
 	flag.Parse()
 	conf, e := config.GenerateConfig(*configFilePath)
