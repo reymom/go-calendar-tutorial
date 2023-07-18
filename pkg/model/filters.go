@@ -124,7 +124,7 @@ type DailyFilter struct {
 	day   uint
 }
 
-func NewDailyFilter(day uint, month time.Month, year uint) *DaylyFilter {
+func NewDailyFilter(day uint, month time.Month, year uint) *DailyFilter {
 	return &DailyFilter{
 		month: NewMonthlyFilter(month, year),
 		day:   day,

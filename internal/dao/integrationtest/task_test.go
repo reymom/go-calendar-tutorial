@@ -177,11 +177,11 @@ func testFilterTasks(t *testing.T) {
 	a.NoError(e)
 	a.Len(list, 1)
 
-	list, e = testEnv.ListTasks(context.Background(), model.NewDaylyFilter(uint(currentDate.Day()), currentDate.Month(), uint(currentDate.Year())))
+	list, e = testEnv.ListTasks(context.Background(), model.NewDailyFilter(uint(currentDate.Day()), currentDate.Month(), uint(currentDate.Year())))
 	a.NoError(e)
 	a.Len(list, 0)
 
-	list, e = testEnv.ListTasks(context.Background(), model.NewDaylyFilter(day, currentDate.Month(), uint(currentDate.Year())))
+	list, e = testEnv.ListTasks(context.Background(), model.NewDailyFilter(day, currentDate.Month(), uint(currentDate.Year())))
 	a.NoError(e)
 	a.Len(list, 1)
 }
