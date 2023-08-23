@@ -8,7 +8,19 @@ _Full stack project consisting of an app written entirely with Go._
 - The frontend is also written with **Go**, using the **Go Templates** engine.
 
 ## Set it up ⚙️
-
+- Postgres development database:
+```bash
+docker-compose up dev_postgres
+```
 
 
 ## Tests ⌨️
+- Unit tests:
+```
+
+```
+
+- Integration tests:
+```
+
+```
